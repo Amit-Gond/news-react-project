@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import NewsItem from './NewsItem'
+import Spinner from './Spinner';
 
 export default class News extends Component {
   articles =[
@@ -49,12 +50,14 @@ export default class News extends Component {
   }
 
   async componentDidMount(){
-    let url =  `https://newsapi.org/v2/top-headlines?country=us&apiKey=0e92d54a98324fd592561f708246dd55&page=1&pageSize=20`;
+    let url =  `https://newsapi.org/v2/top-headlines?country=us&apiKey=0e92d54a98324fd592561f708246dd55&page=1&pageSize=${this.props.pageSize}`;
+    this.setState({loading:true});
     let data = await fetch(url);
     let parsedData = await data.json()
     console.log(parsedData);
     this.setState({articles: parsedData.articles,
-      totalArticles: parsedData.totalResults})
+      totalArticles: parsedData.totalResults,
+       loading: false})
   
 
   }
@@ -62,12 +65,14 @@ export default class News extends Component {
   handlePrevClick = async()=>{
     console.log("prev");
       let url =  `https://newsapi.org/v2/top-headlines?country=us&apiKey=0e92d54a98324fd592561f708246dd55&page=
-      ${this.state.page - 1}&pageSize=20`;
+      ${this.state.page - 1}&pageSize=${this.props.pageSize}`;
+      this.setState({loading:true});
       let data = await fetch(url);
       let parsedData = await data.json()
       console.log(parsedData);
       this.setState({
         page: this.state.page - 1,
+        loading: false,
         articles: parsedData.articles
       })
 
@@ -76,17 +81,18 @@ export default class News extends Component {
   
   handleNextClick = async()=>{
     console.log("next")
-    if(this.state.page +1 > Math.ceil(this.state.totalResults/20)){
+    if(!(this.state.page +1 > Math.ceil(this.state.totalResults/this.props.pageSize))){
       
-    }
-    else{
       let url =  `https://newsapi.org/v2/top-headlines?country=us&apiKey=0e92d54a98324fd592561f708246dd55&page=
-      ${this.state.page+1}&pageSize=20`;
+      ${this.state.page+1}&pageSize=${this.props.pageSize}`;
+      this.setState({loading:true});                         
       let data = await fetch(url);
       let parsedData = await data.json()
+      
        console.log(parsedData);
        this.setState({
          page: this.state.page +1,
+         loading: false,
          articles: parsedData.articles
        })
     }
@@ -97,16 +103,19 @@ export default class News extends Component {
   render() {
     return (
       <div className='container' my-3="true">
-        <h4>NewsMonkey headlines</h4>
-        {this.state.articles.map((element) => {
+        <h4 className='text-center'>Top-News headlines</h4>
+        {this.state.loading && <Spinner/>}
+        {!this.state.loading && this.state.articles.map((element) => {
          
         return <div className="col-4 my-3 d-inline-flex" key={element.url}>
             <NewsItem  title={element.title?element.title.slice(0,50):""} description={element.description?element.description.slice(0,80):""} imgurl={element.urlToImage} url={element.url}/>
         </div>
         })}
         <div className="container d-flex justify-content-center ">
-          <button disabled={this.state.page<=1} type="button mx-3" className="btn btn-dark " onClick={this.handlePrevClick}>prev</button>
-          <button type="button" className="btn btn-dark mx-3" id='Nextbtn' onClick={this.handleNextClick}>next</button>
+          <button disabled={this.state.page<=1} type="button mx-3" className="btn btn-dark " 
+          onClick={this.handlePrevClick}>prev</button>
+          <button disabled={this.state.page + 1 > Math.ceil(this.state.totalResults/this.props.pageSize)}
+           type="button" className="btn btn-dark mx-3" id='Nextbtn' onClick={this.handleNextClick}>next</button>
         </div>
                 
       </div>
