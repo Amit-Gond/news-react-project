@@ -115,7 +115,7 @@ export default class News extends Component {
   render() {
     return (
       <div className='container' my-3="true">
-        <h4 className='text-center'>Top-News headlines</h4>
+        <h4 className='text-center' style={{margin:"20px"}}>News Top-headlines</h4>
         {this.state.loading && <Spinner/>}
         {!this.state.loading && this.state.articles.map((element) => {
          
