@@ -42,7 +42,7 @@ export default class News extends Component {
   ]
 
   static defaultProps = {
-    country: "in",
+    country: "us",
     pageSize: 6,
     category:"general",
 
@@ -58,7 +58,8 @@ export default class News extends Component {
     this.state = {
       articles: this.articles,
       loading : false,
-      page :1
+      page :1,
+      totalResults:0,
 
     }
   }
@@ -70,7 +71,7 @@ export default class News extends Component {
     let parsedData = await data.json()
     console.log(parsedData);
     this.setState({articles: parsedData.articles,
-      totalArticles: parsedData.totalResults,
+      totalResults: parsedData.totalResults,
        loading: false})
   
 
@@ -120,7 +121,13 @@ export default class News extends Component {
         {!this.state.loading && this.state.articles.map((element) => {
          
         return <div className="col-4 my-3 d-inline-flex" key={element.url}>
-            <NewsItem  title={element.title?element.title.slice(0,50):""} description={element.description?element.description.slice(0,80):""} imgurl={element.urlToImage} url={element.url}/>
+            <NewsItem  title={element.title?element.title.slice(0,50):""} 
+            description={element.description?element.description.slice(0,80):""} 
+            imgurl={element.urlToImage}
+             url={element.url}
+             author={element.author}
+             date={element.publishedAt}
+             source={element.source ? element.source.name : ""}/>
         </div>
         })}
         <div className="container d-flex justify-content-center ">
