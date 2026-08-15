@@ -1,12 +1,14 @@
 import React, { Component } from "react";
+import Spinner from "./Spinner@1x-1.0s-73px-73px.gif";
 
 export default class NewsItem extends Component {
   render() {
     let { title, description, imgurl, url, author, date, source } = this.props;
     return (
       <div>
-        <div className="card" style={{ width: "18rem", display: "flex" }}>
+        <div className="card" style={{ width: "18rem", display: "flex-1" }}>
           <img
+          style={{height: "190px"}}
             src={
               imgurl
                 ? imgurl
@@ -16,7 +18,7 @@ export default class NewsItem extends Component {
           <div className="card-body">
               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
               style={{zIndex: "1"}}>
-               {source}
+               {source.slice(0, 15)}
               </span>
             <h5 className="card-title">
               {title}...{" "}
